@@ -14,7 +14,7 @@ class TruckList(Resource):
             params = request.args
 
             client = Socrata("data.sfgov.org", None)
-            trucks = client.get("rqzj-sfat", limit=50, where=f"within_box(location, {params.get('lat1')}, {params.get('long1')}, {params.get('lat2')}, {params.get('long2')})")
+            trucks = client.get("rqzj-sfat", limit=200, where=f"within_box(location, {params.get('lat1')}, {params.get('long1')}, {params.get('lat2')}, {params.get('long2')})")
             
             return {"trucks":trucks}
 
