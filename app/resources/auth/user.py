@@ -20,7 +20,7 @@ from libs.auditory import Auditory
 
 user_schema = UserSchema()
 
-timedelta = datetime.timedelta(minutes=int (os.environ.get('JWT_EXPIRATION_TIME', 5)))
+timedelta = datetime.timedelta(minutes=5)
 custom_pbkdf2 = pbkdf2_sha256.using(rounds=296411)
 
 
@@ -46,15 +46,13 @@ class UserRegister(Resource):
             user.save_to_db()
 
             access_token = create_access_token(identity=user.id, fresh=True, expires_delta=timedelta)
-            refresh_token = create_refresh_token(user.id)
 
             return {
                 "message":"User created successfully!",
                 "user":{ 
                     "user": user_schema.dump(user),
                     "userToken":{
-                        "access_token":access_token,
-                        "refresh_token":refresh_token,
+                        "access_token":access_token
                     }
                 },
             }
@@ -75,15 +73,13 @@ class UserLogin(Resource):
                 access_token = create_access_token(
                     identity=userFound.id, fresh=True, expires_delta=timedelta)
 
-                refresh_token = create_refresh_token(userFound.id)
 
                 return {
                     "message":"User Logged In",
                     "user":{ 
                         "user": user_schema.dump(userFound),
                         "userToken":{
-                            "access_token":access_token,
-                            "refresh_token":refresh_token,
+                            "access_token":access_token
                         }
                     },
                 }
@@ -94,16 +90,3 @@ class UserLogin(Resource):
             Auditory.log_error("WebApi", "Auth", "UserLogin", str(e))
             return {"message": "An error has occured"}, 500
 
-
-class TokenRefresh(Resource):
-    @jwt_refresh_token_required
-    def post(self):
-
-        current_user = get_jwt_identity()
-        new_token = create_access_token(
-            identity=current_user, fresh=False, expires_delta=timedelta)
-        expiration = datetime.datetime.now() + timedelta
-        return {
-            'access_token': new_token,
-            "expiration": expiration.isoformat()
-        }, 200

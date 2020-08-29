@@ -3,7 +3,6 @@ from flask_restful import Api
 from resources.auth.user import (
     UserRegister,
     UserLogin,
-    # TokenRefresh,
     )
 
 # Create bluepirnt
@@ -16,11 +15,6 @@ api.add_resource(UserRegister, '/signup')
 
 # login
 api.add_resource(UserLogin, '/login')
-
-
-# # UserTokenRefresh
-# api.add_resource(TokenRefresh, '/tokenrefresh')
-
 
 
 
