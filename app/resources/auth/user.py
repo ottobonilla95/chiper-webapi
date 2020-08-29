@@ -29,7 +29,6 @@ class UserRegister(Resource):
 
         try:
             user_json = request.get_json()["userData"]
-            user_json = request.get_json()["userData2"]
 
             user = user_schema.load(user_json)
 
